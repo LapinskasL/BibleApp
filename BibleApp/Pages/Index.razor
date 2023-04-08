@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using BibleApp.BibleApiModels;
+@inject IHttpClientFactory _clientFactory
+
 
 <PageTitle>Index</PageTitle>
 
@@ -6,4 +9,15 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private HttpClient bibleApi;
+
+    protected override async Task OnInitializedAsync()
+    {
+        bibleApi = _clientFactory.CreateClient("BibleApi");
+
+        var response = await bibleApi.GetAsync("bibles?ids=de4e12af7f28f599-01");
+
+        var bibles = await response.Content.ReadFromJsonAsync<DataWrapper<List<Bible>>>();
+    }
+}

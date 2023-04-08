@@ -1,6 +1,7 @@
 using BibleApp.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddHttpClient("BibleApi", config =>
+{
+    var baseAddress = builder.Configuration.GetValue<string>("BibleApi:BaseUrl");
+    var apiKey = builder.Configuration.GetValue<string>("BibleApi:Key");
+
+    config.BaseAddress = new Uri(builder.Configuration.GetValue<string>("BibleApi:BaseUrl"));
+    config.DefaultRequestHeaders.Add("api-key", apiKey);
+});
 
 var app = builder.Build();
 
